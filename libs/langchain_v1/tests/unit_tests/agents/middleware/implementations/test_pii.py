@@ -292,9 +292,17 @@ class TestURLDetection:
         matches = detect_url("shorten with bit.ly/abc")
         assert [m["value"] for m in matches] == ["bit.ly/abc"]
 
-    def test_camelcase_host_with_lowercase_tld_still_detected(self) -> None:
+    def test_mixed_case_host_still_detected(self) -> None:
         matches = detect_url("see GitHub.com/trending")
         assert [m["value"] for m in matches] == ["GitHub.com/trending"]
+
+    def test_mixed_case_tld_still_detected(self) -> None:
+        matches = detect_url("see example.CoM/path")
+        assert [m["value"] for m in matches] == ["example.CoM/path"]
+
+    def test_punycode_tld_still_detected(self) -> None:
+        matches = detect_url("see example.xn--fiqs8s/path")
+        assert [m["value"] for m in matches] == ["example.xn--fiqs8s/path"]
 
     def test_no_url_redaction_for_non_urls(self) -> None:
         middleware = PIIMiddleware("url", strategy="redact")
